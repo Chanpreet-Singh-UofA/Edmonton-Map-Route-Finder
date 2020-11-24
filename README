@@ -1,0 +1,36 @@
+Name: Kaiwen Tang, Chanpreet Singh
+ID: 1575518, 1576137
+CMPUT 275, Winter 2020
+
+Major Assignment 2: Part 2
+
+Included Files:
+  * Server
+  * Client
+  * README
+
+Wiring Instructions:
+
+Joystick 
+VRx <--> A8
+VRy <--> A9
+SW  <--> Digital Pin 53
+GND <--> GND
++5V <--> 5V
+Zoom Out Button <--> Digital Pin 47
+Zoom In Button  <--> Digital Pin 45
+
+Running Instructions:
+	Open directory Client in terminal and give command "make upload" and then open directory Server on different terminal and give command "make". Then give command, "./server".
+	Now connection is established and ardunio is ready for user to select two points using joystick. 
+
+Description:
+
+	* Client:
+		User is asked to select two points on the screen using the joystick and then we call function getwaypoints(), in this function we send request to the server with the longitudinal and latidudinal values of the points selected by the user. Then Server wait for the number of waypoints for a max of 10 sec and if nothing is rescieved then we send request with coordinates again. If we get 0 or more then 500 waypoints then we indicate that its NO PATH and do not do anything and ask user to select two points again.Othewise we process all the waypoints rescieved and also senc acknoledments after each waypoint rescieved. We use buffer character array to read entire line in on serial untill we get a \n or \r characters. Reading(timeout) is used to do so. Then we go to draw_route file to use all the waypoitns and join them in the order they came using lines. We use red color for visibility and default thickness. We do conversitions accoring to the zoom level and find the right points on screen to make lines.
+
+	* Server:
+		This part of the programs stay running and interact with the terminal to provide additional details to the user. Server wait for the request for route from the client and once rescieved it process it. If wrong data is resceived then it do nothing and start reading again. Once right instructions are rescieved them it read the file with all waypoints and make the tree (Part 1). Then we find the waypoint in between the two given points and comming on the shortest route. If number of waypoints are 0 or more then 500 then we indicate it and wait for the request again. Otherwise we start sending all the waypoints afer getting achnoledments with in 1 sec as per the assigment guideline. After sending all waypoints we reset the server back to request mode and wait for another request form the client.
+
+Reference: 
+  1. Files serialport.h and serialport.cpp ar used from the lectures.
